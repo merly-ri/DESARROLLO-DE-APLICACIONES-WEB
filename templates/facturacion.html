@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Facturación - Sistema Web{% endblock %}
+{% block content %}
+<div class="container my-5">
+<h2 class="text-center mb-4">Facturación</h2>
+<p class="text-center">Registro demostrativo de facturas del sistema.</p>
+<div class="table-responsive">
+<table class="table table-hover table-bordered shadow">
+<thead class="table-dark">
+<tr><th>N.º Factura</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Estado</th></tr>
+</thead>
+<tbody>
+<tr><td>F001-001</td><td>Lorena López</td><td>16/08/2026</td><td>$25.50</td><td><span class="badge bg-success">Pagada</span></td></tr>
+<tr><td>F001-002</td><td>Paul Pérez</td><td>16/08/2026</td><td>$40.00</td><td><span class="badge bg-warning text-dark">Pendiente</span></td></tr>
+<tr><td>F001-003</td><td>Laura Torres</td><td>16/08/2026</td><td>$18.75</td><td><span class="badge bg-success">Pagada</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+{% endblock %}
