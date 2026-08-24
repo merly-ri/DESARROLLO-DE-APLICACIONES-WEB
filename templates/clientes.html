@@ -2,17 +2,27 @@
 {% block title %}Clientes - Sistema Web{% endblock %}
 {% block content %}
 <div class="container my-5">
-<h2 class="text-center mb-4">Clientes</h2>
+<h2 class="text-center mb-4">{{ titulo }}</h2>
 <p class="text-center">Registro demostrativo de clientes del sistema.</p>
 <div class="table-responsive">
 <table class="table table-striped table-bordered shadow">
 <thead class="table-dark">
-<tr><th>ID</th><th>Nombre</th><th>Correo electrónico</th><th>Teléfono</th></tr>
+<tr>
+<th>ID</th>
+<th>Nombre</th>
+<th>Correo electrónico</th>
+<th>Teléfono</th>
+</tr>
 </thead>
 <tbody>
-<tr><td>001</td><td>María Rivera</td><td>maria@example.com</td><td>0957654082</td></tr>
-<tr><td>002</td><td>Juan Lopez</td><td>juan@example.com</td><td>0937197654</td></tr>
-<tr><td>003</td><td>Ana Torres</td><td>ana@example.com</td><td>0975632980</td></tr>
+{% for cliente in clientes %}
+<tr>
+<td>{{ cliente.id }}</td>
+<td>{{ cliente.nombre }}</td>
+<td>{{ cliente.correo }}</td>
+<td>{{ cliente.telefono }}</td>
+</tr>
+{% endfor %}
 </tbody>
 </table>
 </div>

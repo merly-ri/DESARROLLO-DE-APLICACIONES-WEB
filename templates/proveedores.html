@@ -2,31 +2,26 @@
 {% block title %}Proveedores - Sistema Web{% endblock %}
 {% block content %}
 <div class="container my-5">
-<h2 class="text-center mb-4">Proveedores</h2>
+<h2 class="text-center mb-4">{{ titulo }}</h2>
 <p class="text-center">Registro demostrativo de proveedores del sistema.</p>
 <div class="row g-4">
+{% for proveedor in proveedores %}
 <div class="col-md-6">
 <div class="card h-100 shadow">
 <div class="card-body">
-<h5 class="card-title">Distribuidora ABC</h5>
-<p><strong>Contacto:</strong> 0989191430</p>
-<p><strong>Correo:</strong> cervicios@abc.com</p>
-<p><strong>Productos:</strong> Servicios y materiales tecnológicos.</p>
+<h5 class="card-title">{{ proveedor.nombre }}</h5>
+<p><strong>Contacto:</strong> {{ proveedor.contacto }}</p>
+<p><strong>Correo:</strong> {{ proveedor.correo }}</p>
+<p><strong>Productos:</strong> {{ proveedor.productos }}</p>
+{% if proveedor.estado == "Activo" %}
 <span class="badge bg-primary">Proveedor activo</span>
+{% else %}
+<span class="badge bg-secondary">Proveedor inactivo</span>
+{% endif %}
 </div>
 </div>
 </div>
-<div class="col-md-6">
-<div class="card h-100 shadow">
-<div class="card-body">
-<h5 class="card-title">Comercial XYZ</h5>
-<p><strong>Contacto:</strong> 0958959682</p>
-<p><strong>Correo:</strong> accesorios@xyz.com</p>
-<p><strong>Productos:</strong> Equipos y accesorios tecnológicos.</p>
-<span class="badge bg-primary">Proveedor activo</span>
-</div>
-</div>
-</div>
+{% endfor %}
 </div>
 </div>
 {% endblock %}
