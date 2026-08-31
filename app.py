@@ -1,5 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 app = Flask(__name__)
+app.config["SECRET_KEY"] = "clave-secreta-ponycenter"
 
 productos_lista = [
     {"nombre": "Diseño Web", "descripcion": "Diseño y creación de sitios web modernos y responsive.", "precio": 50.00, "estado": "Disponible"},
