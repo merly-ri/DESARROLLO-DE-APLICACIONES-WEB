@@ -1,14 +1,9 @@
-import os
-import sqlite3
 from flask import Flask, render_template, redirect, url_for, flash
 from forms.producto_form import ProductoForm
+from conexion import obtener_conexion
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "clave-secreta-ponycenter"
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, "data")
-DATABASE = os.path.join(DATA_DIR, "ferreteria.db")
 
 clientes_lista = [
     {"id": "001", "nombre": "María Rivera", "correo": "maria@example.com", "telefono": "0957654082"},
@@ -27,34 +22,6 @@ facturas_lista = [
     {"numero": "F001-003", "cliente": "Laura Torres", "fecha": "16/08/2026", "total": 18.75, "estado": "Pagada"}
 ]
 
-def get_db_connection():
-    os.makedirs(DATA_DIR, exist_ok=True)
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-def init_db():
-    conn = get_db_connection()
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS productos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            categoria TEXT,
-            precio REAL NOT NULL,
-            stock INTEGER
-        )
-    """)
-    cantidad = conn.execute("SELECT COUNT(*) FROM productos").fetchone()[0]
-    if cantidad == 0:
-        productos_iniciales = [
-            ("Diseño Web", None, 50.00, None),
-            ("Desarrollo Web", None, 80.00, None),
-            ("Mantenimiento Web", None, 35.00, None)
-        ]
-        conn.executemany("INSERT INTO productos (nombre, categoria, precio, stock) VALUES (?, ?, ?, ?)", productos_iniciales)
-        conn.commit()
-    conn.close()
-
 @app.route("/")
 def inicio():
     informacion = {
@@ -66,8 +33,11 @@ def inicio():
 
 @app.route("/productos")
 def productos():
-    conn = get_db_connection()
-    productos = conn.execute("SELECT id, nombre, categoria, precio, stock FROM productos ORDER BY id").fetchall()
+    conn = obtener_conexion()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT id, nombre, categoria, precio, stock FROM productos ORDER BY id")
+    productos = cursor.fetchall()
+    cursor.close()
     conn.close()
     return render_template("productos.html", productos=productos, titulo="Productos")
 
@@ -75,12 +45,14 @@ def productos():
 def nuevo_producto():
     form = ProductoForm()
     if form.validate_on_submit():
-        conn = get_db_connection()
-        conn.execute(
-            "INSERT INTO productos (nombre, categoria, precio, stock) VALUES (?, ?, ?, ?)",
+        conn = obtener_conexion()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO productos (nombre, categoria, precio, stock) VALUES (%s, %s, %s, %s)",
             (form.nombre.data, form.categoria.data, form.precio.data, form.stock.data)
         )
         conn.commit()
+        cursor.close()
         conn.close()
         flash("Producto guardado correctamente.", "success")
         return redirect(url_for("productos"))
@@ -97,8 +69,6 @@ def proveedores():
 @app.route("/facturacion")
 def facturacion():
     return render_template("facturacion.html", facturas=facturas_lista, titulo="Facturación")
-
-init_db()
 
 if __name__ == "__main__":
     app.run(debug=True)
